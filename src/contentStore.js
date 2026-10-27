@@ -12,6 +12,8 @@ export const defaultContent = {
     contactEmail: 'asiahighlandpartners@gmail.com',
     heroImage: '/media/reach-map.jpg',
     logoRevealVideo: '/media/ahp-logo-reveal-web.mp4',
+    logoRevealMobileVideo: '/media/ahp-logo-reveal-landscape.mp4',
+    logoRevealSpeed: 1.7,
   },
   homepage: {
     storyEyebrow: 'Making His name known',

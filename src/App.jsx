@@ -42,6 +42,7 @@ function SiteIntro() {
   const { general } = useSiteContent();
   const videoRef = useRef(null);
   const [sound, setSound] = useState(false);
+  const [mobileReveal, setMobileReveal] = useState(() => window.matchMedia('(max-width: 560px)').matches);
   const [visible, setVisible] = useState(() => sessionStorage.getItem('ahp-intro-seen') !== 'yes');
   const dismiss = () => {
     sessionStorage.setItem('ahp-intro-seen', 'yes');
@@ -50,9 +51,15 @@ function SiteIntro() {
   useEffect(() => {
     if (!visible) return undefined;
     document.body.classList.add('intro-open');
-    const fallback = window.setTimeout(dismiss, 11500);
+    const fallback = window.setTimeout(dismiss, 6800);
     return () => { document.body.classList.remove('intro-open'); window.clearTimeout(fallback); };
   }, [visible]);
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: 560px)');
+    const sync = () => setMobileReveal(query.matches);
+    query.addEventListener('change', sync);
+    return () => query.removeEventListener('change', sync);
+  }, []);
   const toggleSound = () => {
     const video = videoRef.current;
     if (!video) return;
@@ -61,7 +68,7 @@ function SiteIntro() {
     video.play().catch(() => {});
   };
   return <AnimatePresence>{visible && <motion.div className="site-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.025 }} transition={{ duration: .8 }}>
-    <video ref={videoRef} autoPlay muted playsInline onEnded={dismiss}><source src={general.logoRevealVideo} type="video/mp4" /></video>
+    <video ref={videoRef} autoPlay muted playsInline onEnded={dismiss} onLoadedMetadata={(event) => { event.currentTarget.playbackRate = Number(general.logoRevealSpeed) || 1.7; }}><source src={mobileReveal ? general.logoRevealMobileVideo : general.logoRevealVideo} type="video/mp4" /></video>
     <div className="site-intro__controls"><button onClick={toggleSound} aria-pressed={sound}>{sound ? <Volume2 /> : <VolumeX />}{sound ? 'Sound on' : 'Tap for sound'}</button><button onClick={dismiss}>Enter website <ArrowRight /></button></div>
   </motion.div>}</AnimatePresence>;
 }
