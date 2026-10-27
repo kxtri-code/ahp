@@ -5,6 +5,7 @@ import {
   Globe2, HandHeart, Mail, MapPin, Menu, MessageCircle,
   Send, Sparkles, Users, X,
 } from 'lucide-react';
+import { addRecord, makeId } from './contentStore';
 import './join.css';
 
 const opportunities = [
@@ -36,30 +37,28 @@ function JoinHeader() {
 }
 
 function VolunteerForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [card, setCard] = useState(null);
   const submit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const roles = data.getAll('roles').join(', ');
-    const subject = encodeURIComponent(`Volunteer interest — ${data.get('name')}`);
-    const body = encodeURIComponent([
-      `Name: ${data.get('name')}`,
-      `Email: ${data.get('email')}`,
-      `Phone / WhatsApp: ${data.get('phone') || 'Not provided'}`,
-      `Location: ${data.get('location')}`,
-      `Church / organisation: ${data.get('church') || 'Not provided'}`,
-      `Areas of interest: ${roles || 'Open to any area'}`,
-      `Availability: ${data.get('availability')}`,
-      '',
-      'Why I would like to serve:',
-      data.get('message'),
-    ].join('\n'));
-    setSubmitted(true);
-    window.setTimeout(() => { window.location.href = `mailto:asiahighlandpartners@gmail.com?subject=${subject}&body=${body}`; }, 450);
+    const record = { id: makeId('AHP'), createdAt: new Date().toISOString(), name: data.get('name'), email: data.get('email'), phone: data.get('phone') || '', location: data.get('location'), church: data.get('church') || '', roles: roles || 'Open to any area', availability: data.get('availability'), message: data.get('message') };
+    addRecord('volunteers', record);
+    setCard(record);
   };
 
-  if (submitted) return <motion.div className="join-success" role="status" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
-    <span><Check /></span><p className="join-kicker">Application prepared</p><h2>Thank you for stepping forward.</h2><p>Your email app is opening with your volunteer application ready to send to Asia Highland Partners.</p><button onClick={() => setSubmitted(false)}>Review my details</button>
+  const downloadCard = () => {
+    const canvas = document.createElement('canvas'); canvas.width = 1200; canvas.height = 720; const ctx = canvas.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 1200, 720); gradient.addColorStop(0, '#0d1c2c'); gradient.addColorStop(1, '#254f72'); ctx.fillStyle = gradient; ctx.fillRect(0, 0, 1200, 720);
+    ctx.fillStyle = '#f47729'; ctx.fillRect(0, 0, 24, 720); ctx.beginPath(); ctx.arc(1050, 120, 210, 0, Math.PI * 2); ctx.globalAlpha = .16; ctx.fill(); ctx.globalAlpha = 1;
+    ctx.fillStyle = '#f47729'; ctx.font = '700 27px Arial'; ctx.fillText('ASIA HIGHLAND PARTNERS', 80, 88); ctx.fillStyle = '#ffffff'; ctx.font = '700 68px Arial'; ctx.fillText('VOLUNTEER ID', 80, 178);
+    ctx.font = '700 47px Arial'; ctx.fillText(card.name.toUpperCase(), 80, 330); ctx.fillStyle = '#b9c6d1'; ctx.font = '28px Arial'; ctx.fillText(card.roles, 80, 382); ctx.fillText(card.location, 80, 428);
+    ctx.fillStyle = '#f47729'; ctx.font = '700 26px monospace'; ctx.fillText(card.id, 80, 620); ctx.fillStyle = '#d9e0e6'; ctx.font = '23px Arial'; ctx.fillText('SERVING FROM THE HIGHLANDS TO THE NATIONS', 80, 670);
+    const link = document.createElement('a'); link.download = `${card.id}-volunteer-card.png`; link.href = canvas.toDataURL('image/png'); link.click();
+  };
+
+  if (card) return <motion.div className="join-success join-success--card" role="status" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }}>
+    <div><p className="join-kicker">Registration complete</p><h2>Welcome to the movement.</h2><p>Your application has been recorded in the demo CMS. Download your volunteer ID card and keep the reference number for follow-up.</p></div><div className="volunteer-id"><div className="volunteer-id__brand"><img src="/media/ahp-logo.png" alt="" /><span>Asia Highland<small>Partners</small></span></div><span>Volunteer ID</span><h3>{card.name}</h3><p>{card.roles}</p><small>{card.location}</small><strong>{card.id}</strong></div><div className="join-success__actions"><button onClick={downloadCard}>Download ID card</button><button onClick={() => window.print()}>Print</button><button onClick={() => setCard(null)}>Edit registration</button></div>
   </motion.div>;
 
   return <form className="join-form" onSubmit={submit}>

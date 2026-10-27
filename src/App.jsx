@@ -1,35 +1,27 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import AriseNagaland from './AriseNagaland';
+import AriseRegister from './AriseRegister';
 import JoinMovement from './JoinMovement';
+import AdminCMS from './AdminCMS';
+import { BlogPage, StoryPage, TeamPage } from './EditorialPages';
+import { useSiteContent } from './contentStore';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, BookOpen, ChevronRight,
-  Globe2, Handshake, Heart, Mail, MapPin, Menu, Play, Quote,
+  Globe2, Handshake, Heart, Mail, MapPin, Menu, Quote,
   Send, Sprout, Users, X,
 } from 'lucide-react';
 
 const CURRENT_YEAR = 2026;
 
 const navItems = [
-  ['Our story', 'story'],
-  ['What we do', 'work'],
-  ['Where we serve', 'countries'],
-  ['Our vision', 'vision'],
+  ['Our story', '/our-story'],
+  ['What we do', '/#work'],
+  ['Our team', '/team'],
+  ['Blog', '/blog'],
 ];
 
-const missionSteps = [
-  { number: '01', icon: Users, title: 'Recruit', copy: 'We identify new Christians in unreached areas and pastors in local churches who are called to missions.', image: '/media/portrait-nepal.jpg' },
-  { number: '02', icon: BookOpen, title: 'Train', copy: 'We provide cross-cultural, theological and practical training rooted in the local context.', image: '/media/mission-field.jpg' },
-  { number: '03', icon: Send, title: 'Send', copy: 'We prayerfully send local missionaries in small teams to places where the Gospel has not been heard.', image: '/media/mountains.jpg' },
-  { number: '04', icon: Handshake, title: 'Partner', copy: 'We partner with local churches to sustain missions and cultivate communities of faith for generations.', image: '/media/team.jpg' },
-];
-
-const countries = [
-  { name: 'India', label: 'The highlands of Northeast India', image: '/media/highlands.jpg', position: '50% 52%' },
-  { name: 'Nepal', label: 'Mountain communities across Nepal', image: '/media/portrait-nepal.jpg', position: '50% 45%' },
-  { name: 'Bhutan', label: 'Remote communities in the Himalayas', image: '/media/mountains.jpg', position: '50% 45%' },
-  { name: 'Myanmar', label: 'Communities throughout Myanmar', image: '/media/tea-picker.jpg', position: '50% 42%' },
-];
+const missionIcons = [Users, BookOpen, Send, Handshake];
 
 const reveal = {
   hidden: { opacity: 0, y: 32 },
@@ -43,6 +35,25 @@ function BrandMark() {
       <span className="brand-mark__type">Asia Highland<br />Partners</span>
     </a>
   );
+}
+
+function SiteIntro() {
+  const { general } = useSiteContent();
+  const [visible, setVisible] = useState(() => sessionStorage.getItem('ahp-intro-seen') !== 'yes');
+  const dismiss = () => {
+    sessionStorage.setItem('ahp-intro-seen', 'yes');
+    setVisible(false);
+  };
+  useEffect(() => {
+    if (!visible) return undefined;
+    document.body.classList.add('intro-open');
+    const fallback = window.setTimeout(dismiss, 11500);
+    return () => { document.body.classList.remove('intro-open'); window.clearTimeout(fallback); };
+  }, [visible]);
+  return <AnimatePresence>{visible && <motion.div className="site-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.025 }} transition={{ duration: .8 }}>
+    <video autoPlay muted playsInline onEnded={dismiss}><source src={general.logoRevealVideo} type="video/mp4" /></video>
+    <button onClick={dismiss}>Enter website <ArrowRight /></button>
+  </motion.div>}</AnimatePresence>;
 }
 
 function Navigation() {
@@ -60,7 +71,7 @@ function Navigation() {
       <header className={`site-header ${scrolled ? 'is-scrolled' : ''}`}>
         <BrandMark />
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navItems.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}
+          {navItems.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
           <a className="event-link" href="/arise-nagaland">Arise Nagaland</a>
         </nav>
         <a className="nav-cta" href="/join">Join the movement <ArrowUpRight size={16} /></a>
@@ -71,8 +82,8 @@ function Navigation() {
           <motion.div className="mobile-menu" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
             <div className="mobile-menu__top"><BrandMark /><button onClick={() => setOpen(false)} aria-label="Close menu"><X /></button></div>
             <nav>
-              {navItems.map(([label, id], index) => (
-                <motion.a key={id} href={`#${id}`} onClick={() => setOpen(false)} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.07 }}>
+              {navItems.map(([label, href], index) => (
+                <motion.a key={href} href={href} onClick={() => setOpen(false)} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.07 }}>
                   <span>0{index + 1}</span>{label}<ChevronRight />
                 </motion.a>
               ))}
@@ -86,41 +97,19 @@ function Navigation() {
   );
 }
 
-function VideoModal({ open, onClose }) {
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKey = (event) => event.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    document.body.classList.add('modal-open');
-    return () => { window.removeEventListener('keydown', onKey); document.body.classList.remove('modal-open'); };
-  }, [open, onClose]);
-
+function Hero() {
+  const { general } = useSiteContent();
   return (
-    <AnimatePresence>
-      {open && (
-        <motion.div className="video-modal" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
-          <button className="video-modal__close" onClick={onClose} aria-label="Close video"><X /></button>
-          <motion.div className="video-modal__frame" initial={{ scale: 0.92, y: 30 }} animate={{ scale: 1, y: 0 }} exit={{ scale: 0.96 }} onClick={(event) => event.stopPropagation()}>
-            <iframe src="https://www.youtube.com/embed/GvZNVkmBvos?autoplay=1&rel=0" title="Asia Highland Partners - Reaching the Unreached" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen />
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-function Hero({ onPlay }) {
-  return (
-    <section id="home" className="hero">
-      <div className="hero__media" aria-hidden="true"><iframe src="https://www.youtube.com/embed/GvZNVkmBvos?autoplay=1&mute=1&controls=0&loop=1&playlist=GvZNVkmBvos&playsinline=1&rel=0&modestbranding=1" tabIndex="-1" title="" /></div>
-      <div className="hero__fallback" /><div className="hero__wash" /><div className="hero__grain" />
+    <section id="home" className="hero hero--map">
+      <motion.div className="hero__map" initial={{ scale: 1.08, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}><img src={general.heroImage} alt="World map showing unreached people groups" /></motion.div>
+      <div className="hero__wash" /><div className="hero__grain" /><span className="hero__pulse hero__pulse--one" /><span className="hero__pulse hero__pulse--two" />
       <div className="hero__content page-shell">
-        <motion.p className="eyebrow eyebrow--light" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>From the highlands · To the nations</motion.p>
-        <motion.h1 initial={{ opacity: 0, y: 55 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 1, ease: [0.22, 1, 0.36, 1] }}>Reaching the<br /><em>unreached.</em></motion.h1>
-        <motion.p className="hero__intro" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.7 }}>Equipping South Asian missionaries to carry the hope of Jesus to communities where His name has never been heard.</motion.p>
+        <motion.p className="eyebrow eyebrow--light" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>{general.heroEyebrow}</motion.p>
+        <motion.h1 initial={{ opacity: 0, y: 55 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 1, ease: [0.22, 1, 0.36, 1] }}>{general.heroTitle}</motion.h1>
+        <motion.p className="hero__intro" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.7 }}>{general.heroIntro}</motion.p>
         <motion.div className="hero__actions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
           <a className="button button--orange" href="#story">Discover our mission <ArrowDown size={17} /></a>
-          <button className="play-button" onClick={onPlay}><span><Play fill="currentColor" size={16} /></span> Watch our story</button>
+          <a className="hero__secondary" href="/join">Join the movement <ArrowUpRight size={16} /></a>
         </motion.div>
       </div>
       <div className="hero__side-note"><span>India</span><span>Nepal</span><span>Bhutan</span><span>Myanmar</span></div>
@@ -130,19 +119,20 @@ function Hero({ onPlay }) {
 }
 
 function IntroStory() {
+  const { homepage } = useSiteContent();
   return (
     <section id="story" className="story section-pad"><div className="page-shell">
       <motion.div className="story__headline" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
-        <p className="eyebrow">Making His name known</p><h2>A mission born in the mountains—<span>moving beyond them.</span></h2>
+        <p className="eyebrow">{homepage.storyEyebrow}</p><h2>{homepage.storyTitle}</h2>
       </motion.div>
       <div className="story__grid">
         <motion.figure className="story__image" initial={{ clipPath: 'inset(0 100% 0 0)' }} whileInView={{ clipPath: 'inset(0 0% 0 0)' }} viewport={{ once: true }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}>
-          <img src="/media/mountains.jpg" alt="A man overlooking the highland mountains" /><figcaption><MapPin size={15} /> From the highlands</figcaption>
+          <img src={homepage.storyImage} alt="A missionary walking toward a highland village" /><figcaption><MapPin size={15} /> From the highlands</figcaption>
         </motion.figure>
         <motion.div className="story__copy" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.25 }}>
-          <p className="lead">Asia Highland Partners recruits, trains and disciples South Asian missionaries to reach the unreached people groups of South Asia.</p>
-          <p>Once, highlanders called for the Gospel. Today, those same mountain communities are being equipped to carry the Good News to valleys, islands and the ends of the earth.</p>
-          <a className="text-link" href="#vision">Read the founder’s vision <ArrowRight size={17} /></a>
+          <p className="lead">{homepage.storyLead}</p>
+          <p>{homepage.storyBody}</p>
+          <a className="text-link" href="/our-story">Explore our story archive <ArrowRight size={17} /></a>
         </motion.div>
         <motion.div className="story__stat" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }}>
           <span className="story__stat-number">88<sup>%</sup></span><p>of people groups across our four focus countries remain unreached.</p>
@@ -153,6 +143,7 @@ function IntroStory() {
 }
 
 function MissionSection() {
+  const { missionSteps } = useSiteContent();
   return (
     <section id="work" className="mission section-pad"><div className="page-shell">
       <div className="section-heading section-heading--light">
@@ -160,10 +151,10 @@ function MissionSection() {
         <p>Our approach is simple and sustainable: invest in local leaders who understand the language, culture and spiritual landscape of the communities they serve.</p>
       </div>
       <div className="mission-grid">
-        {missionSteps.map((step) => { const Icon = step.icon; return (
+        {missionSteps.map((step, index) => { const Icon = missionIcons[index % missionIcons.length]; return (
           <motion.article className="mission-card" key={step.title} variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.22 }}>
             <img src={step.image} alt="" /><div className="mission-card__shade" />
-            <div className="mission-card__top"><span>{step.number}</span><Icon /></div>
+            <div className="mission-card__top"><span>0{index + 1}</span><Icon /></div>
             <div className="mission-card__content"><h3>{step.title}</h3><p>{step.copy}</p></div>
           </motion.article>
         ); })}
@@ -174,6 +165,7 @@ function MissionSection() {
 
 function CountriesSection() {
   const [active, setActive] = useState(0);
+  const { countries } = useSiteContent();
   const country = countries[active];
   return (
     <section id="countries" className="countries section-pad"><div className="page-shell">
@@ -197,25 +189,16 @@ function ScriptureBand() {
 }
 
 function VisionSection() {
+  const { homepage } = useSiteContent();
   return (
     <section id="vision" className="vision section-pad"><div className="page-shell vision__grid">
-      <motion.div className="vision__portrait" initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.85 }}><img src="/media/woman-outdoors.jpg" alt="A woman in a highland community" /><div className="vision__prism"><img src="/media/ahp-logo.png" alt="" /></div></motion.div>
+      <motion.div className="vision__portrait" initial={{ opacity: 0, x: -40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.85 }}><img src={homepage.founderImage} alt={`${homepage.founderName}, ${homepage.founderRole} of Asia Highland Partners`} /><div className="vision__prism"><img src="/media/ahp-logo.png" alt="" /></div></motion.div>
       <motion.div className="vision__copy" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
         <p className="eyebrow">Our vision</p><h2>Highlanders carrying hope.</h2>
-        <p className="lead">“It is time for Highlanders to take up the mantle of the Great Commission—to reach the lost sheep in South Asia.”</p>
+        <p className="lead">“{homepage.founderQuote}”</p>
         <p>God has given us a burden for the most unreached people groups of South Asia. We invite you to pray and partner with us in equipping local believers to go and make disciples of Jesus Christ.</p>
-        <div className="signature"><span>In Christ,</span><strong>Husezo Rhakho</strong><small>Founder &amp; President</small></div>
+        <div className="signature"><span>In Christ,</span><strong>{homepage.founderName}</strong><small>{homepage.founderRole}</small></div>
       </motion.div>
-    </div></section>
-  );
-}
-
-function MapSection() {
-  return (
-    <section className="map-section section-pad"><div className="page-shell">
-      <div className="map-section__intro"><div><p className="eyebrow eyebrow--light">The unfinished task</p><h2>Look beyond<br />the familiar.</h2></div><div><p>The red points represent people groups where access to the Gospel is limited or unavailable.</p><span className="map-key"><i /> Unreached people groups</span></div></div>
-      <motion.div className="map-frame" initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.9 }}><img src="/media/unreached-world-map.jpg" alt="World map showing the global distribution of reached and unreached people groups" /><span className="map-pulse map-pulse--one" /><span className="map-pulse map-pulse--two" /></motion.div>
-      <p className="map-source">Map source: Joshua Project · July 2020</p>
     </div></section>
   );
 }
@@ -233,19 +216,23 @@ function Footer() {
   return (
     <footer className="footer"><div className="page-shell">
       <div className="footer__top"><BrandMark /><p>Reaching the unreached through locally cultivated, sustainable missions.</p><a href="mailto:asiahighlandpartners@gmail.com"><Mail /> asiahighlandpartners@gmail.com</a></div>
-      <div className="footer__grid"><div><span>India</span><p>Nagaland, India</p></div><div><span>United States</span><p>300 S 13th Street<br />Waco, TX 76701</p></div><div className="footer__nav"><span>Explore</span>{navItems.map(([label, id]) => <a href={`#${id}`} key={id}>{label}</a>)}<a href="/join">Join the movement</a><a href="/arise-nagaland">Arise Nagaland</a></div><div className="footer__social"><span>Follow</span><div><a href="https://www.facebook.com/profile.php?id=100079909465858" aria-label="Facebook">f</a><a href="https://www.youtube.com/@asiahighlandpartners4143" aria-label="YouTube">▶</a><a href="mailto:asiahighlandpartners@gmail.com" aria-label="Email Asia Highland Partners">@</a></div></div></div>
+      <div className="footer__grid"><div><span>India</span><p>Nagaland, India</p></div><div><span>United States</span><p>300 S 13th Street<br />Waco, TX 76701</p></div><div className="footer__nav"><span>Explore</span>{navItems.map(([label, href]) => <a href={href} key={href}>{label}</a>)}<a href="/join">Join the movement</a><a href="/arise-nagaland">Arise Nagaland</a><a href="/cms">Site manager</a></div><div className="footer__social"><span>Follow</span><div><a href="https://www.facebook.com/profile.php?id=100079909465858" aria-label="Facebook">f</a><a href="https://www.youtube.com/@asiahighlandpartners4143" aria-label="YouTube">▶</a><a href="mailto:asiahighlandpartners@gmail.com" aria-label="Email Asia Highland Partners">@</a></div></div></div>
       <div className="footer__bottom"><span>© {CURRENT_YEAR} Asia Highland Partners</span><span>From the highlands, to the highlands.</span></div>
     </div></footer>
   );
 }
 
 function App() {
-  const [videoOpen, setVideoOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+  if (window.location.pathname.startsWith('/cms')) return <AdminCMS />;
+  if (window.location.pathname.startsWith('/arise-register')) return <AriseRegister />;
   if (window.location.pathname.startsWith('/arise-nagaland')) return <AriseNagaland />;
   if (window.location.pathname.startsWith('/join')) return <JoinMovement />;
-  return <><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero onPlay={() => setVideoOpen(true)} /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>South Asia</span></div><IntroStory /><MissionSection /><CountriesSection /><ScriptureBand /><VisionSection /><MapSection /><PartnerSection /></main><Footer /><VideoModal open={videoOpen} onClose={() => setVideoOpen(false)} /></>;
+  if (window.location.pathname.startsWith('/team')) return <TeamPage />;
+  if (window.location.pathname.startsWith('/blog')) return <BlogPage />;
+  if (window.location.pathname.startsWith('/our-story')) return <StoryPage />;
+  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>South Asia</span></div><IntroStory /><MissionSection /><CountriesSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /></>;
 }
 
 export default App;

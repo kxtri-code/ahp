@@ -31,3 +31,5 @@ public/unreached_map.png
 *.njsproj
 *.sln
 *.sw?
+
+.vercel

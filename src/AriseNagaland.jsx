@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import {
-  ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Check,
+  ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Check,
   ChevronDown, Clock3, Flame, Globe2, Mail, MapPin, Menu, Mic2, Play,
   Sparkles, Users, X,
 } from 'lucide-react';
+import { useSiteContent } from './contentStore';
 import './arise.css';
 
 const navItems = [
@@ -37,6 +38,22 @@ function AriseLogo() {
   return <a className="arise-logo" href="/arise-nagaland" aria-label="Arise Nagaland home"><span className="arise-logo__spark">✦</span><span>ARISE<small>NAGALAND</small></span></a>;
 }
 
+function AriseIntro() {
+  const { arise } = useSiteContent();
+  const [visible, setVisible] = useState(() => sessionStorage.getItem('arise-intro-seen') !== 'yes');
+  const dismiss = () => { sessionStorage.setItem('arise-intro-seen', 'yes'); setVisible(false); };
+  useEffect(() => {
+    if (!visible) return undefined;
+    document.body.classList.add('intro-open');
+    const fallback = window.setTimeout(dismiss, 11000);
+    return () => { document.body.classList.remove('intro-open'); window.clearTimeout(fallback); };
+  }, [visible]);
+  return <AnimatePresence>{visible && <motion.div className="arise-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: .8 }}>
+    <video autoPlay muted playsInline onEnded={dismiss}><source src={arise.logoRevealVideo} type="video/mp4" /></video>
+    <button onClick={dismiss}>Enter Arise <ArrowRight /></button>
+  </motion.div>}</AnimatePresence>;
+}
+
 function AriseHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -50,17 +67,18 @@ function AriseHeader() {
     <header className={`arise-header ${scrolled ? 'is-scrolled' : ''}`}>
       <AriseLogo />
       <nav>{navItems.map(([label, id]) => <a key={id} href={`#${id}`}>{label}</a>)}</nav>
-      <a className="arise-header__cta" href="#arise-register">Join the list <ArrowUpRight /></a>
+      <a className="arise-header__cta" href="/arise-register">Register now <ArrowUpRight /></a>
       <button className="arise-menu-button" onClick={() => setOpen(true)} aria-label="Open Arise menu"><Menu /></button>
     </header>
     <AnimatePresence>{open && <motion.div className="arise-mobile-menu" initial={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }} animate={{ opacity: 1, clipPath: 'inset(0)' }} exit={{ opacity: 0, clipPath: 'inset(0 0 100% 0)' }}>
       <div><AriseLogo /><button onClick={() => setOpen(false)} aria-label="Close Arise menu"><X /></button></div>
-      <nav>{navItems.map(([label, id], index) => <a href={`#${id}`} onClick={() => setOpen(false)} key={id}><small>0{index + 1}</small>{label}<ArrowRight /></a>)}<a className="arise-mobile-menu__cta" href="#arise-register" onClick={() => setOpen(false)}>Join the early list <ArrowUpRight /></a></nav>
+      <nav>{navItems.map(([label, id], index) => <a href={`#${id}`} onClick={() => setOpen(false)} key={id}><small>0{index + 1}</small>{label}<ArrowRight /></a>)}<a className="arise-mobile-menu__cta" href="/arise-register" onClick={() => setOpen(false)}>Register now <ArrowUpRight /></a></nav>
     </motion.div>}</AnimatePresence>
   </>;
 }
 
 function AriseVideo({ open, onClose }) {
+  const { arise } = useSiteContent();
   useEffect(() => {
     if (!open) return undefined;
     const close = (event) => event.key === 'Escape' && onClose();
@@ -69,23 +87,22 @@ function AriseVideo({ open, onClose }) {
   }, [open, onClose]);
   return <AnimatePresence>{open && <motion.div className="arise-video-modal" role="dialog" aria-modal="true" aria-label="Arise Nagaland film" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose}>
     <button onClick={onClose} aria-label="Close Arise video"><X /></button>
-    <motion.div initial={{ scale: .94, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={(event) => event.stopPropagation()}><video src="/media/arise-nagaland.mp4" controls autoPlay playsInline /></motion.div>
+    <motion.div initial={{ scale: .94, y: 20 }} animate={{ scale: 1, y: 0 }} onClick={(event) => event.stopPropagation()}><video src={arise.heroVideo} controls autoPlay playsInline /></motion.div>
   </motion.div>}</AnimatePresence>;
 }
 
 function AriseHero({ onPlay }) {
+  const { arise } = useSiteContent();
   return <section className="arise-hero">
-    <div className="arise-hero__video" aria-hidden="true"><video autoPlay muted loop playsInline preload="metadata" poster="/media/mission-field.jpg"><source src="/media/arise-nagaland.mp4" type="video/mp4" /></video></div>
+    <div className="arise-hero__video" aria-hidden="true"><video autoPlay muted loop playsInline preload="metadata" poster="/media/missionary-journey.jpg"><source src={arise.heroVideo} type="video/mp4" /></video></div>
     <div className="arise-hero__image" /><div className="arise-hero__overlay" /><div className="arise-noise" />
     <div className="arise-shell arise-hero__content">
-      <motion.p className="arise-kicker" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .35 }}>Asia Highland Partners presents</motion.p>
-      <motion.h1 initial={{ opacity: 0, y: 65 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}><span>Arise</span><em>Nagaland</em></motion.h1>
-      <motion.div className="arise-hero__bottom" initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .65 }}>
-        <p>A missions gathering to awaken worship, deepen calling and prepare a generation to go where there is no Gospel.</p>
-        <div className="arise-hero__actions"><a href="#arise-register">Join the early list <ArrowDown /></a><button onClick={onPlay}><span><Play fill="currentColor" /></span>Play the vision</button></div>
+      <motion.div className="arise-hero__minimal" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .45, duration: .85 }}>
+        <div><p className="arise-kicker">Asia Highland Partners presents</p><h1><span>Arise</span><em>Nagaland</em></h1></div>
+        <div className="arise-hero__actions"><a href="/arise-register">Register now <ArrowUpRight /></a><button onClick={onPlay}><span><Play fill="currentColor" /></span>Play full film</button></div>
       </motion.div>
     </div>
-    <div className="arise-hero__meta"><span><CalendarDays />Dates to be announced</span><span><MapPin />Nagaland, India</span><span><Clock3 />A multi-day gathering</span></div>
+    <div className="arise-hero__meta"><span><CalendarDays />{arise.date}</span><span><MapPin />{arise.venue}</span><span><Clock3 />A multi-day gathering</span></div>
   </section>;
 }
 
@@ -133,7 +150,7 @@ function Registration() {
     window.location.href = `mailto:asiahighlandpartners@gmail.com?subject=${subject}&body=${body}`;
   };
   return <section id="arise-register" className="arise-register arise-section"><div className="arise-shell arise-register__grid">
-    <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-eyebrow">Early interest</p><h2>Be first<br />to know.</h2><p>Dates, venue, passes and delegate information will be shared when registration opens.</p><div className="arise-register__facts"><span><Check />Registration alerts</span><span><Check />Program announcements</span><span><Check />Volunteer opportunities</span></div></motion.div>
+    <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-eyebrow">Registration</p><h2>Take your<br />place.</h2><p>Complete the full delegate registration or join the update list while final event details are being confirmed.</p><a className="arise-register__primary" href="/arise-register">Open registration form <ArrowUpRight /></a><div className="arise-register__facts"><span><Check />Delegate registration</span><span><Check />Program announcements</span><span><Check />Volunteer opportunities</span></div></motion.div>
     <motion.form onSubmit={submit} variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}>
       <label>Full name<input name="name" required autoComplete="name" /></label>
       <label>Email address<input name="email" type="email" required autoComplete="email" /></label>
@@ -158,5 +175,5 @@ export default function AriseNagaland() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   useEffect(() => { const previous = document.title; document.title = 'Arise Nagaland | A Missions Gathering'; document.body.classList.add('arise-body'); window.scrollTo(0, 0); return () => { document.title = previous; document.body.classList.remove('arise-body'); }; }, []);
-  return <div className="arise-page"><motion.div className="arise-progress" style={{ scaleX: progress }} /><AriseHeader /><main><AriseHero onPlay={() => setVideoOpen(true)} /><div className="arise-marquee"><div>ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦ ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦</div></div><WhyArise /><Experience /><Program /><Voices /><Registration /><FAQ /></main><AriseFooter /><AriseVideo open={videoOpen} onClose={() => setVideoOpen(false)} /></div>;
+  return <div className="arise-page"><AriseIntro /><motion.div className="arise-progress" style={{ scaleX: progress }} /><AriseHeader /><main><AriseHero onPlay={() => setVideoOpen(true)} /><div className="arise-marquee"><div>ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦ ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦</div></div><WhyArise /><Experience /><Program /><Voices /><Registration /><FAQ /></main><AriseFooter /><AriseVideo open={videoOpen} onClose={() => setVideoOpen(false)} /></div>;
 }
