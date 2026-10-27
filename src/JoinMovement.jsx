@@ -6,6 +6,7 @@ import {
   Send, Sparkles, Users, X,
 } from 'lucide-react';
 import { addRecord, makeId } from './contentStore';
+import MobileDock from './MobileDock';
 import './join.css';
 
 const opportunities = [
@@ -92,7 +93,7 @@ export default function JoinMovement() {
     <JoinHeader />
     <main>
       <section className="join-hero">
-        <div className="join-hero__media"><img src="/media/team.jpg" alt="A team of young leaders serving together" /></div><div className="join-hero__overlay" />
+        <div className="join-hero__media"><img src="/media/missionary-journey.jpg" alt="A missionary walking toward a highland community" /></div><div className="join-hero__overlay" />
         <div className="join-shell join-hero__content"><motion.p className="join-kicker" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>Your yes can carry hope further</motion.p><motion.h1 initial={{ opacity: 0, y: 45 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }}>Join the<br /><em>movement.</em></motion.h1><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .5 }}><p>Bring your time, skills and heart alongside a locally led mission reaching the unreached people groups of South Asia.</p><a href="#volunteer-form">Start your application <ArrowRight /></a></motion.div></div>
         <div className="join-hero__note"><MapPin /> Serving from wherever you are</div>
       </section>
@@ -101,12 +102,12 @@ export default function JoinMovement() {
 
       <section className="join-roles"><div className="join-shell"><p className="join-kicker">Ways to serve</p><div className="join-roles__top"><h2>Use what’s<br />in your hands.</h2><p>Choose one area or several. The team will help identify the most useful next step.</p></div><div className="join-role-grid">{opportunities.map(({ icon: Icon, title, copy }, index) => <motion.article key={title} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}><span>0{index + 1}</span><Icon /><h3>{title}</h3><p>{copy}</p></motion.article>)}</div></div></section>
 
-      <section className="join-path"><div className="join-shell"><div className="join-path__image"><img src="/media/woman-outdoors.jpg" alt="A woman from a highland community" /></div><div className="join-path__content"><p className="join-kicker">What happens next</p><h2>A thoughtful path into service.</h2>{[['01', 'Share your interest', 'Tell us where you are, what you care about and how you may be able to help.'], ['02', 'Start a conversation', 'The AHP team will respond personally and explore a fitting opportunity with you.'], ['03', 'Serve with purpose', 'Receive the context, guidance and support needed to contribute well.']].map(([number, title, copy]) => <div className="join-step" key={number}><strong>{number}</strong><div><h3>{title}</h3><p>{copy}</p></div></div>)}</div></div></section>
+      <section className="join-path"><div className="join-shell"><div className="join-path__image"><img src="/media/mission-recruit.jpg" alt="A local outreach volunteer delivering practical help" /></div><div className="join-path__content"><p className="join-kicker">What happens next</p><h2>A thoughtful path into service.</h2>{[['01', 'Share your interest', 'Tell us where you are, what you care about and how you may be able to help.'], ['02', 'Start a conversation', 'The AHP team will respond personally and explore a fitting opportunity with you.'], ['03', 'Serve with purpose', 'Receive the context, guidance and support needed to contribute well.']].map(([number, title, copy]) => <div className="join-step" key={number}><strong>{number}</strong><div><h3>{title}</h3><p>{copy}</p></div></div>)}</div></div></section>
 
       <section id="volunteer-form" className="join-apply"><div className="join-shell"><VolunteerForm /></div></section>
 
       <section className="join-contact"><div className="join-shell"><Sparkles /><div><p className="join-kicker">Prefer a conversation?</p><h2>We’d be glad to hear your story.</h2></div><a href="mailto:asiahighlandpartners@gmail.com">Email AHP <ArrowUpRight /></a></div></section>
     </main>
-    <footer className="join-footer"><div className="join-shell"><JoinLogo /><p>Reaching the unreached through locally cultivated, sustainable missions.</p><div><a href="/">AHP home</a><a href="/arise-nagaland">Arise Nagaland</a><a href="https://actswaco.churchcenter.com/giving/to/asia-highland-partners" target="_blank" rel="noreferrer">Give</a></div></div><div className="join-shell join-footer__bottom"><span>© 2026 Asia Highland Partners</span><a href="mailto:asiahighlandpartners@gmail.com">asiahighlandpartners@gmail.com</a></div></footer>
+    <footer className="join-footer"><div className="join-shell"><JoinLogo /><p>Reaching the unreached through locally cultivated, sustainable missions.</p><div><a href="/">AHP home</a><a href="/arise-nagaland">Arise Nagaland</a><a href="https://actswaco.churchcenter.com/giving/to/asia-highland-partners" target="_blank" rel="noreferrer">Give</a></div></div><div className="join-shell join-footer__bottom"><span>© 2026 Asia Highland Partners</span><a href="mailto:asiahighlandpartners@gmail.com">asiahighlandpartners@gmail.com</a></div></footer><MobileDock active="Join" />
   </div>;
 }

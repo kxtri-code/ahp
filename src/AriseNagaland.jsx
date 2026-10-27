@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import {
   ArrowLeft, ArrowRight, ArrowUpRight, CalendarDays, Check,
   ChevronDown, Clock3, Flame, Globe2, Mail, MapPin, Menu, Mic2, Play,
-  Sparkles, Users, X,
+  Sparkles, Users, Volume2, VolumeX, X,
 } from 'lucide-react';
 import { useSiteContent } from './contentStore';
+import MobileDock from './MobileDock';
 import './arise.css';
 
 const navItems = [
@@ -40,6 +41,8 @@ function AriseLogo() {
 
 function AriseIntro() {
   const { arise } = useSiteContent();
+  const videoRef = useRef(null);
+  const [sound, setSound] = useState(false);
   const [visible, setVisible] = useState(() => sessionStorage.getItem('arise-intro-seen') !== 'yes');
   const dismiss = () => { sessionStorage.setItem('arise-intro-seen', 'yes'); setVisible(false); };
   useEffect(() => {
@@ -48,9 +51,16 @@ function AriseIntro() {
     const fallback = window.setTimeout(dismiss, 11000);
     return () => { document.body.classList.remove('intro-open'); window.clearTimeout(fallback); };
   }, [visible]);
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = sound;
+    setSound(!sound);
+    video.play().catch(() => {});
+  };
   return <AnimatePresence>{visible && <motion.div className="arise-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.02 }} transition={{ duration: .8 }}>
-    <video autoPlay muted playsInline onEnded={dismiss}><source src={arise.logoRevealVideo} type="video/mp4" /></video>
-    <button onClick={dismiss}>Enter Arise <ArrowRight /></button>
+    <video ref={videoRef} autoPlay muted playsInline onEnded={dismiss}><source src={arise.logoRevealVideo} type="video/mp4" /></video>
+    <div className="arise-intro__controls"><button onClick={toggleSound} aria-pressed={sound}>{sound ? <Volume2 /> : <VolumeX />}{sound ? 'Sound on' : 'Tap for sound'}</button><button onClick={dismiss}>Enter Arise <ArrowRight /></button></div>
   </motion.div>}</AnimatePresence>;
 }
 
@@ -93,13 +103,22 @@ function AriseVideo({ open, onClose }) {
 
 function AriseHero({ onPlay }) {
   const { arise } = useSiteContent();
+  const videoRef = useRef(null);
+  const [sound, setSound] = useState(false);
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = sound;
+    setSound(!sound);
+    video.play().catch(() => {});
+  };
   return <section className="arise-hero">
-    <div className="arise-hero__video" aria-hidden="true"><video autoPlay muted loop playsInline preload="metadata" poster="/media/missionary-journey.jpg"><source src={arise.heroVideo} type="video/mp4" /></video></div>
+    <div className="arise-hero__video"><video ref={videoRef} autoPlay muted loop playsInline preload="metadata" poster="/media/missionary-journey.jpg"><source src={arise.heroVideo} type="video/mp4" /></video></div>
     <div className="arise-hero__image" /><div className="arise-hero__overlay" /><div className="arise-noise" />
     <div className="arise-shell arise-hero__content">
       <motion.div className="arise-hero__minimal" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .45, duration: .85 }}>
         <div><p className="arise-kicker">Asia Highland Partners presents</p><h1><span>Arise</span><em>Nagaland</em></h1></div>
-        <div className="arise-hero__actions"><a href="/arise-register">Register now <ArrowUpRight /></a><button onClick={onPlay}><span><Play fill="currentColor" /></span>Play full film</button></div>
+        <div className="arise-hero__actions"><a href="/arise-register">Register now <ArrowUpRight /></a><button onClick={toggleSound} aria-pressed={sound}><span>{sound ? <Volume2 /> : <VolumeX />}</span>{sound ? 'Sound on' : 'Tap for sound'}</button><button onClick={onPlay}><span><Play fill="currentColor" /></span>Full film</button></div>
       </motion.div>
     </div>
     <div className="arise-hero__meta"><span><CalendarDays />{arise.date}</span><span><MapPin />{arise.venue}</span><span><Clock3 />A multi-day gathering</span></div>
@@ -111,7 +130,7 @@ function WhyArise() {
     <motion.div className="arise-heading" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, amount: .25 }}><p className="arise-eyebrow">Why Arise</p><h2>Not another<br />conference.<br /><em>A response.</em></h2></motion.div>
     <div className="arise-why__grid">
       <motion.div className="arise-why__copy" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-lead">A generation is asking what faithful mission looks like now. Arise Nagaland creates space to worship, listen, learn and answer.</p><p>Rooted in Nagaland’s own story of receiving the Gospel and becoming a sending people, this gathering looks forward—to the communities, cultures and nations still waiting to hear.</p><a href="#arise-program">Explore the experience <ArrowRight /></a></motion.div>
-      <motion.div className="arise-why__visual" initial={{ clipPath: 'inset(0 0 100% 0)' }} whileInView={{ clipPath: 'inset(0)' }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22,1,.36,1] }}><img src="/media/mission-field.jpg" alt="Young adults gathered in worship" /><div><Flame /><strong>Rise.</strong><strong>Respond.</strong><strong>Go.</strong></div></motion.div>
+      <motion.div className="arise-why__visual" initial={{ clipPath: 'inset(0 0 100% 0)' }} whileInView={{ clipPath: 'inset(0)' }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22,1,.36,1] }}><img src="/media/mission-train-web.jpg" alt="A ministry leader equipping a gathered community" /><div><Flame /><strong>Rise.</strong><strong>Respond.</strong><strong>Go.</strong></div></motion.div>
     </div>
   </div></section>;
 }
@@ -120,9 +139,9 @@ function Experience() {
   return <section id="arise-experience" className="arise-experience arise-section"><div className="arise-shell">
     <div className="arise-experience__top"><motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-eyebrow">The experience</p><h2>Come ready<br />to encounter.</h2></motion.div><p>Every part of the gathering is designed to move from inspiration toward a clear, supported next step.</p></div>
     <div className="arise-bento">
-      <motion.article className="arise-bento__feature" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><img src="/media/mission-field.jpg" alt="Worship gathering" /><div><span>01</span><h3>Gather</h3><p>One generation, one room, many stories—united in worship and prayer.</p></div></motion.article>
+      <motion.article className="arise-bento__feature" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><img src="/media/mission-send-web.jpg" alt="A ministry gathering focused on the gospel" /><div><span>01</span><h3>Gather</h3><p>One generation, one room, many stories—united in worship and prayer.</p></div></motion.article>
       <motion.article className="arise-bento__word" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><span>BE<br />STILL.</span><small>Listen before you move.</small></motion.article>
-      <motion.article className="arise-bento__image" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><img src="/media/team.jpg" alt="Young leaders together" /><div><span>02</span><h3>Equip</h3></div></motion.article>
+      <motion.article className="arise-bento__image" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><img src="/media/mission-partner.jpg" alt="A leader equipping ministry partners" /><div><span>02</span><h3>Equip</h3></div></motion.article>
       <motion.article className="arise-bento__call" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><Globe2 /><h3>Go where hope is not yet known.</h3><p>Turn a stirring into a practical commitment.</p></motion.article>
     </div>
   </div></section>;
@@ -175,5 +194,5 @@ export default function AriseNagaland() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   useEffect(() => { const previous = document.title; document.title = 'Arise Nagaland | A Missions Gathering'; document.body.classList.add('arise-body'); window.scrollTo(0, 0); return () => { document.title = previous; document.body.classList.remove('arise-body'); }; }, []);
-  return <div className="arise-page"><AriseIntro /><motion.div className="arise-progress" style={{ scaleX: progress }} /><AriseHeader /><main><AriseHero onPlay={() => setVideoOpen(true)} /><div className="arise-marquee"><div>ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦ ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦</div></div><WhyArise /><Experience /><Program /><Voices /><Registration /><FAQ /></main><AriseFooter /><AriseVideo open={videoOpen} onClose={() => setVideoOpen(false)} /></div>;
+  return <div className="arise-page"><AriseIntro /><motion.div className="arise-progress" style={{ scaleX: progress }} /><AriseHeader /><main><AriseHero onPlay={() => setVideoOpen(true)} /><div className="arise-marquee"><div>ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦ ARISE NAGALAND ✦ WORSHIP ✦ MISSION ✦ COMMUNITY ✦ RESPONSE ✦</div></div><WhyArise /><Experience /><Program /><Voices /><Registration /><FAQ /></main><AriseFooter /><AriseVideo open={videoOpen} onClose={() => setVideoOpen(false)} /><MobileDock active="Arise" /></div>;
 }

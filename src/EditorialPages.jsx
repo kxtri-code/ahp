@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, ArrowUpRight, Calendar, ChevronDown, Mail, MapPin, Menu, Quote, X } from 'lucide-react';
 import { useSiteContent } from './contentStore';
+import MobileDock from './MobileDock';
 import './editorial.css';
 
 function EditorialLogo() {
@@ -20,7 +21,8 @@ function EditorialFooter() {
 
 function PageShell({ active, children, className = '' }) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
-  return <div className={`editorial-page ${className}`}><EditorialHeader active={active} /><main>{children}</main><EditorialFooter /></div>;
+  const dockActive = active === 'Blog' ? 'Stories' : '';
+  return <div className={`editorial-page ${className}`}><EditorialHeader active={active} /><main>{children}</main><EditorialFooter /><MobileDock active={dockActive} /></div>;
 }
 
 export function TeamPage() {

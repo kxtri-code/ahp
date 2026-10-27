@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import AriseNagaland from './AriseNagaland';
 import AriseRegister from './AriseRegister';
@@ -9,8 +9,9 @@ import { useSiteContent } from './contentStore';
 import {
   ArrowDown, ArrowRight, ArrowUpRight, BookOpen, ChevronRight,
   Globe2, Handshake, Heart, Mail, MapPin, Menu, Quote,
-  Send, Sprout, Users, X,
+  Send, Sprout, Users, Volume2, VolumeX, X,
 } from 'lucide-react';
+import MobileDock from './MobileDock';
 
 const CURRENT_YEAR = 2026;
 
@@ -39,6 +40,8 @@ function BrandMark() {
 
 function SiteIntro() {
   const { general } = useSiteContent();
+  const videoRef = useRef(null);
+  const [sound, setSound] = useState(false);
   const [visible, setVisible] = useState(() => sessionStorage.getItem('ahp-intro-seen') !== 'yes');
   const dismiss = () => {
     sessionStorage.setItem('ahp-intro-seen', 'yes');
@@ -50,9 +53,16 @@ function SiteIntro() {
     const fallback = window.setTimeout(dismiss, 11500);
     return () => { document.body.classList.remove('intro-open'); window.clearTimeout(fallback); };
   }, [visible]);
+  const toggleSound = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = sound;
+    setSound(!sound);
+    video.play().catch(() => {});
+  };
   return <AnimatePresence>{visible && <motion.div className="site-intro" initial={{ opacity: 1 }} exit={{ opacity: 0, scale: 1.025 }} transition={{ duration: .8 }}>
-    <video autoPlay muted playsInline onEnded={dismiss}><source src={general.logoRevealVideo} type="video/mp4" /></video>
-    <button onClick={dismiss}>Enter website <ArrowRight /></button>
+    <video ref={videoRef} autoPlay muted playsInline onEnded={dismiss}><source src={general.logoRevealVideo} type="video/mp4" /></video>
+    <div className="site-intro__controls"><button onClick={toggleSound} aria-pressed={sound}>{sound ? <Volume2 /> : <VolumeX />}{sound ? 'Sound on' : 'Tap for sound'}</button><button onClick={dismiss}>Enter website <ArrowRight /></button></div>
   </motion.div>}</AnimatePresence>;
 }
 
@@ -232,7 +242,7 @@ function App() {
   if (window.location.pathname.startsWith('/team')) return <TeamPage />;
   if (window.location.pathname.startsWith('/blog')) return <BlogPage />;
   if (window.location.pathname.startsWith('/our-story')) return <StoryPage />;
-  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>South Asia</span></div><IntroStory /><MissionSection /><CountriesSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /></>;
+  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>South Asia</span></div><IntroStory /><MissionSection /><CountriesSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /><MobileDock active="Home" /></>;
 }
 
 export default App;
