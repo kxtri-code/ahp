@@ -94,7 +94,7 @@ export default function JoinMovement() {
     <main>
       <section className="join-hero">
         <div className="join-hero__media"><img src="/media/missionary-journey.jpg" alt="A missionary walking toward a highland community" /></div><div className="join-hero__overlay" />
-        <div className="join-shell join-hero__content"><motion.p className="join-kicker" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>Your yes can carry hope further</motion.p><motion.h1 initial={{ opacity: 0, y: 45 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }}>Join the<br /><em>movement.</em></motion.h1><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .5 }}><p>Bring your time, skills and heart alongside a locally led mission reaching the unreached people groups of South Asia.</p><a href="#volunteer-form">Start your application <ArrowRight /></a></motion.div></div>
+        <div className="join-shell join-hero__content"><motion.p className="join-kicker" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>Your yes can carry hope further</motion.p><motion.h1 initial={{ opacity: 0, y: 45 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8 }}>Join the<br /><em>movement.</em></motion.h1><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: .5 }}><p>Bring your time, skills and heart alongside a locally led mission reaching the unreached people groups of Asia.</p><a href="#volunteer-form">Start your application <ArrowRight /></a></motion.div></div>
         <div className="join-hero__note"><MapPin /> Serving from wherever you are</div>
       </section>
 

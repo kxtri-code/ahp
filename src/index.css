@@ -366,3 +366,7 @@ body.intro-open { overflow: hidden; }
   .site-header,.editorial-header,.join-header,.arise-header,.arise-signup>header { border-radius: 18px; box-shadow: 0 14px 36px rgba(6,17,28,.2); }
   button,a { -webkit-tap-highlight-color: transparent; }
 }
+
+/* AHP hero film: the YouTube embed is muted until the visitor opts into sound. */
+.hero__media{opacity:.8}.hero__media iframe{pointer-events:none}.hero__sound{border:0;padding:11px 0;background:none;cursor:pointer}.hero__sound svg{flex:0 0 auto}.partner__give{background:var(--navy-deep);color:white;border-color:var(--navy-deep)}
+@media (max-width:560px){.hero__media iframe{display:block;opacity:.78}.hero__sound{justify-content:center}}

@@ -7,13 +7,14 @@ import AdminCMS from './AdminCMS';
 import { BlogPage, StoryPage, TeamPage } from './EditorialPages';
 import { useSiteContent } from './contentStore';
 import {
-  ArrowDown, ArrowRight, ArrowUpRight, BookOpen, ChevronRight,
+  ArrowDown, ArrowRight, BookOpen, ChevronRight,
   Globe2, Handshake, Heart, Mail, MapPin, Menu, Quote,
   Send, Sprout, Users, Volume2, VolumeX, X,
 } from 'lucide-react';
 import MobileDock from './MobileDock';
 
 const CURRENT_YEAR = 2026;
+const GIVE_URL = 'https://actswaco.churchcenter.com/giving/to/asia-highland-partners';
 
 const navItems = [
   ['Our story', '/our-story'],
@@ -91,7 +92,7 @@ function Navigation() {
           {navItems.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
           <a className="event-link" href="/arise-nagaland">Arise Nagaland</a>
         </nav>
-        <a className="nav-cta" href="/join">Join the movement <ArrowUpRight size={16} /></a>
+        <a className="nav-cta" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <Heart size={16} /></a>
         <button className="menu-toggle" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
       </header>
       <AnimatePresence>
@@ -105,7 +106,7 @@ function Navigation() {
                 </motion.a>
               ))}
               <a href="/arise-nagaland"><span>✦</span>Arise Nagaland<ChevronRight /></a>
-              <a className="mobile-menu__cta" href="/join" onClick={() => setOpen(false)}>Join the movement <ArrowUpRight /></a>
+              <a className="mobile-menu__cta" href={GIVE_URL} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>Give now <Heart /></a>
             </nav>
           </motion.div>
         )}
@@ -116,9 +117,15 @@ function Navigation() {
 
 function Hero() {
   const { general } = useSiteContent();
+  const frameRef = useRef(null);
+  const [sound, setSound] = useState(false);
+  const toggleSound = () => {
+    frameRef.current?.contentWindow?.postMessage(JSON.stringify({ event: 'command', func: sound ? 'mute' : 'unMute', args: [] }), '*');
+    setSound(!sound);
+  };
   return (
     <section id="home" className="hero hero--map">
-      <motion.div className="hero__map" initial={{ scale: 1.08, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}><img src={general.heroImage} alt="World map showing unreached people groups" /></motion.div>
+      <div className="hero__media"><iframe ref={frameRef} title="Asia Highland Partners mission film" src="https://www.youtube.com/embed/GvZNVkmBvos?autoplay=1&mute=1&controls=0&loop=1&playlist=GvZNVkmBvos&playsinline=1&modestbranding=1&rel=0&enablejsapi=1" allow="autoplay; encrypted-media; picture-in-picture" /></div>
       <div className="hero__wash" /><div className="hero__grain" /><span className="hero__pulse hero__pulse--one" /><span className="hero__pulse hero__pulse--two" />
       <div className="hero__content page-shell">
         <motion.p className="eyebrow eyebrow--light" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>{general.heroEyebrow}</motion.p>
@@ -126,7 +133,7 @@ function Hero() {
         <motion.p className="hero__intro" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.65, duration: 0.7 }}>{general.heroIntro}</motion.p>
         <motion.div className="hero__actions" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}>
           <a className="button button--orange" href="#story">Discover our mission <ArrowDown size={17} /></a>
-          <a className="hero__secondary" href="/join">Join the movement <ArrowUpRight size={16} /></a>
+          <button className="hero__secondary hero__sound" onClick={toggleSound}>{sound ? <Volume2 size={16} /> : <VolumeX size={16} />}{sound ? 'Sound on' : 'Tap for sound'}</button>
         </motion.div>
       </div>
       <div className="hero__side-note"><span>India</span><span>Nepal</span><span>Bhutan</span><span>Myanmar</span></div>
@@ -152,7 +159,7 @@ function IntroStory() {
           <a className="text-link" href="/our-story">Explore our story archive <ArrowRight size={17} /></a>
         </motion.div>
         <motion.div className="story__stat" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-          <span className="story__stat-number">88<sup>%</sup></span><p>of people groups across our four focus countries remain unreached.</p>
+        <span className="story__stat-number">3,600<sup>+</sup></span><p>unreached people groups across Asia are still waiting to hear.</p>
         </motion.div>
       </div>
     </div></section>
@@ -180,27 +187,6 @@ function MissionSection() {
   );
 }
 
-function CountriesSection() {
-  const [active, setActive] = useState(0);
-  const { countries } = useSiteContent();
-  const country = countries[active];
-  return (
-    <section id="countries" className="countries section-pad"><div className="page-shell">
-      <div className="section-heading"><div><p className="eyebrow">Where we serve</p><h2>Four nations.<br />One calling.</h2></div><p>Across these four countries are 2,461 distinct people groups. Geography, language and restrictions keep many beyond the reach of traditional missions.</p></div>
-      <div className="countries__experience">
-        <div className="countries__list" role="tablist" aria-label="AHP focus countries">
-          {countries.map((item, index) => <button key={item.name} className={index === active ? 'is-active' : ''} onMouseEnter={() => setActive(index)} onFocus={() => setActive(index)} onClick={() => setActive(index)} role="tab" aria-selected={index === active}><span>0{index + 1}</span><strong>{item.name}</strong><ArrowUpRight /></button>)}
-        </div>
-        <div className="countries__visual">
-          <AnimatePresence mode="wait"><motion.img key={country.name} src={country.image} alt={country.label} style={{ objectPosition: country.position }} initial={{ opacity: 0, scale: 1.05 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }} /></AnimatePresence>
-          <div className="countries__label"><MapPin size={18} /><span>{country.label}</span></div>
-          <div className="countries__badge"><Globe2 /><strong>2,461</strong><span>people groups</span></div>
-        </div>
-      </div>
-    </div></section>
-  );
-}
-
 function ScriptureBand() {
   return <section className="scripture"><div className="scripture__image" /><div className="scripture__overlay" /><motion.div className="scripture__content page-shell" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}><Quote /><blockquote>How beautiful upon the mountains are the feet of him who brings good news.</blockquote><cite>Isaiah 52:7</cite></motion.div></section>;
 }
@@ -213,7 +199,8 @@ function VisionSection() {
       <motion.div className="vision__copy" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
         <p className="eyebrow">Our vision</p><h2>Highlanders carrying hope.</h2>
         <p className="lead">“{homepage.founderQuote}”</p>
-        <p>God has given us a burden for the most unreached people groups of South Asia. We invite you to pray and partner with us in equipping local believers to go and make disciples of Jesus Christ.</p>
+        <p>{homepage.visionBody}</p>
+        <p>{homepage.visionDetails}</p>
         <div className="signature"><span>In Christ,</span><strong>{homepage.founderName}</strong><small>{homepage.founderRole}</small></div>
       </motion.div>
     </div></section>
@@ -224,7 +211,7 @@ function PartnerSection() {
   return (
     <section id="partner" className="partner"><div className="partner__rays" aria-hidden="true"><i /><i /><i /><i /><i /></div><div className="page-shell partner__content">
       <motion.div variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}><p className="eyebrow">Take your place in the story</p><h2>Small efforts.<br /><em>Kingdom change.</em></h2></motion.div>
-      <motion.div className="partner__actions" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }}><p>Your prayer, generosity and partnership help equip local missionaries to go where few others can.</p><div><a className="button button--navy" href="/join">Volunteer with us <Users size={17} /></a><a className="button button--outline-dark" href="https://actswaco.churchcenter.com/giving/to/asia-highland-partners" target="_blank" rel="noreferrer">Give now <Heart size={17} /></a></div></motion.div>
+      <motion.div className="partner__actions" variants={reveal} initial="hidden" whileInView="visible" viewport={{ once: true }}><p>Your prayer, generosity and partnership help equip local missionaries to go where few others can.</p><div><a className="button button--navy" href="/join">Volunteer with us <Users size={17} /></a><a className="button button--outline-dark partner__give" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <Heart size={17} /></a></div></motion.div>
     </div></section>
   );
 }
@@ -233,7 +220,7 @@ function Footer() {
   return (
     <footer className="footer"><div className="page-shell">
       <div className="footer__top"><BrandMark /><p>Reaching the unreached through locally cultivated, sustainable missions.</p><a href="mailto:asiahighlandpartners@gmail.com"><Mail /> asiahighlandpartners@gmail.com</a></div>
-      <div className="footer__grid"><div><span>India</span><p>Nagaland, India</p></div><div><span>United States</span><p>300 S 13th Street<br />Waco, TX 76701</p></div><div className="footer__nav"><span>Explore</span>{navItems.map(([label, href]) => <a href={href} key={href}>{label}</a>)}<a href="/join">Join the movement</a><a href="/arise-nagaland">Arise Nagaland</a><a href="/cms">Site manager</a></div><div className="footer__social"><span>Follow</span><div><a href="https://www.facebook.com/profile.php?id=100079909465858" aria-label="Facebook">f</a><a href="https://www.youtube.com/@asiahighlandpartners4143" aria-label="YouTube">▶</a><a href="mailto:asiahighlandpartners@gmail.com" aria-label="Email Asia Highland Partners">@</a></div></div></div>
+      <div className="footer__grid"><div><span>India</span><p>Nagaland, India</p></div><div><span>United States</span><p>300 S 13th Street<br />Waco, TX 76701</p></div><div className="footer__nav"><span>Explore</span>{navItems.map(([label, href]) => <a href={href} key={href}>{label}</a>)}<a href={GIVE_URL} target="_blank" rel="noreferrer">Give now</a><a href="/arise-nagaland">Arise Nagaland</a><a href="/cms">Site manager</a></div><div className="footer__social"><span>Follow</span><div><a href="https://www.facebook.com/profile.php?id=100079909465858" aria-label="Facebook">f</a><a href="https://www.youtube.com/@asiahighlandpartners4143" aria-label="YouTube">▶</a><a href="mailto:asiahighlandpartners@gmail.com" aria-label="Email Asia Highland Partners">@</a></div></div></div>
       <div className="footer__bottom"><span>© {CURRENT_YEAR} Asia Highland Partners</span><span>From the highlands, to the highlands.</span></div>
     </div></footer>
   );
@@ -249,7 +236,7 @@ function App() {
   if (window.location.pathname.startsWith('/team')) return <TeamPage />;
   if (window.location.pathname.startsWith('/blog')) return <BlogPage />;
   if (window.location.pathname.startsWith('/our-story')) return <StoryPage />;
-  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>South Asia</span></div><IntroStory /><MissionSection /><CountriesSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /><MobileDock active="Home" /></>;
+  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>Asia</span></div><IntroStory /><MissionSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /><MobileDock active="Home" /></>;
 }
 
 export default App;

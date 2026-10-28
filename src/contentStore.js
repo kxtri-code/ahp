@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
-const CONTENT_KEY = 'ahp-site-content-v2';
-const RECORDS_KEY = 'ahp-site-records-v1';
+const CONTENT_KEY = 'ahp-site-content-v3';
+const RECORDS_KEY = 'ahp-site-records-v2';
 const CHANGE_EVENT = 'ahp-content-change';
 
 export const defaultContent = {
   general: {
     heroEyebrow: 'From the highlands · To the nations',
     heroTitle: 'Reaching the unreached.',
-    heroIntro: 'Equipping South Asian missionaries to carry the hope of Jesus to communities where His name has never been heard.',
+    heroIntro: 'Equipping indigenous missionaries across Asia to carry the hope of Jesus to communities where His name has never been heard.',
     contactEmail: 'asiahighlandpartners@gmail.com',
     heroImage: '/media/reach-map.jpg',
     logoRevealVideo: '/media/ahp-logo-reveal-web.mp4',
@@ -18,13 +18,15 @@ export const defaultContent = {
   homepage: {
     storyEyebrow: 'Making His name known',
     storyTitle: 'A mission born in the mountains—moving beyond them.',
-    storyLead: 'Asia Highland Partners recruits, trains and disciples South Asian missionaries to reach the unreached people groups of South Asia.',
-    storyBody: 'Once, highlanders called for the Gospel. Today, those same mountain communities are being equipped to carry the Good News to valleys, islands and the ends of the earth.',
+    storyLead: 'Asia Highland Partners recruits, trains and disciples Asian missionaries to reach unreached people groups across Asia through locally driven, sustainable mission movements.',
+    storyBody: 'Our story began with a calling spoken over a thirteen-year-old boy in Nagaland. Today, that calling has become an indigenous missions network—rooted in local churches, shaped by language and culture, and carried by people who already belong to the communities they serve.',
     storyImage: '/media/missionary-journey.jpg',
     founderImage: '/media/founder-portrait-web.jpg',
     founderName: 'Husezo Rhakho',
     founderRole: 'Founder & President',
-    founderQuote: 'It is time for Highlanders to take up the mantle of the Great Commission—to reach the lost sheep in South Asia.',
+    founderQuote: 'It is time for Highlanders to take up the mantle of the Great Commission—to reach the lost sheep in Asia.',
+    visionBody: 'To reach the unreached people groups of Asia and make the name of Jesus Christ known among every tribe, tongue and nation.',
+    visionDetails: 'AHP is a non-denominational, evangelical mission-sending organization aligned with the Lausanne Covenant. We recruit, train and disciple Asian missionaries through locally driven, sustainable and indigenous mission movements.',
   },
   arise: {
     title: 'Arise Nagaland',
@@ -48,10 +50,10 @@ export const defaultContent = {
     { id: 'country-myanmar', name: 'Myanmar', label: 'Communities throughout Myanmar', image: '/media/country-myanmar.jpg', position: '50% 48%' },
   ],
   team: [
-    { id: 'team-founder', name: 'Husezo Rhakho', role: 'Founder & President', location: 'Nagaland, India', bio: 'Husezo carries a vision to equip highland believers for locally led, sustainable mission among unreached communities across South Asia.', portrait: '/media/founder-portrait-web.jpg', position: 'center 28%' },
+    { id: 'team-founder', name: 'Husezo Rhakho', role: 'Founder & President', location: 'Nagaland, India', bio: 'Husezo carries a vision to equip highland believers for locally led, sustainable mission among unreached communities across Asia.', portrait: '/media/founder-portrait-web.jpg', position: 'center 28%' },
     { id: 'team-2', name: 'Kezhasezo Rhakho', role: 'Mission Training Lead', location: 'Northeast India', bio: 'Kezhasezo equips emerging missionaries through contextual discipleship, practical preparation and pastoral care.', portrait: '/media/team-portraits-demo.png', position: '50% 0%' },
     { id: 'team-3', name: 'Mhonbeni Kikon', role: 'Community Engagement', location: 'Nagaland, India', bio: 'Mhonbeni works alongside local churches to create welcoming pathways into prayer, service and mission.', portrait: '/media/team-portraits-demo.png', position: '100% 0%' },
-    { id: 'team-4', name: 'Neikuo Zhale', role: 'Field Mobilisation', location: 'South Asia', bio: 'Neikuo supports locally led teams as they discern calling, prepare for the field and build resilient communities.', portrait: '/media/team-portraits-demo.png', position: '0% 100%' },
+    { id: 'team-4', name: 'Neikuo Zhale', role: 'Field Mobilisation', location: 'Asia', bio: 'Neikuo supports locally led teams as they discern calling, prepare for the field and build resilient communities.', portrait: '/media/team-portraits-demo.png', position: '0% 100%' },
     { id: 'team-5', name: 'Visakhonuo Nagi', role: 'Communications & Stories', location: 'Kohima, India', bio: 'Visakhonuo helps tell stories with dignity, connecting supporters to the people and purpose behind the mission.', portrait: '/media/team-portraits-demo.png', position: '50% 100%' },
     { id: 'team-6', name: 'Akum Longkumer', role: 'Operations Coordinator', location: 'Dimapur, India', bio: 'Akum brings clarity to logistics, administration and events so mission teams can focus on people and ministry.', portrait: '/media/team-portraits-demo.png', position: '100% 100%' },
   ],
@@ -130,6 +132,14 @@ export function deleteRecord(collection, id) {
   records[collection] = (records[collection] || []).filter((item) => item.id !== id);
   localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
   window.dispatchEvent(new Event('ahp-records-change'));
+}
+
+export function updateRecord(collection, id, patch) {
+  const records = getRecords();
+  records[collection] = (records[collection] || []).map((item) => item.id === id ? { ...item, ...patch } : item);
+  localStorage.setItem(RECORDS_KEY, JSON.stringify(records));
+  window.dispatchEvent(new Event('ahp-records-change'));
+  return records[collection].find((item) => item.id === id);
 }
 
 export function makeId(prefix) {
