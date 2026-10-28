@@ -136,7 +136,6 @@ function Hero() {
           <button className="hero__secondary hero__sound" onClick={toggleSound}>{sound ? <Volume2 size={16} /> : <VolumeX size={16} />}{sound ? 'Sound on' : 'Tap for sound'}</button>
         </motion.div>
       </div>
-      <div className="hero__side-note"><span>India</span><span>Nepal</span><span>Bhutan</span><span>Myanmar</span></div>
       <div className="hero__scroll"><span>Scroll to explore</span><div /></div>
     </section>
   );
