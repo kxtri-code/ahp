@@ -4,7 +4,7 @@ import AriseNagaland from './AriseNagaland';
 import AriseRegister, { AriseIdCard } from './AriseRegister';
 import JoinMovement from './JoinMovement';
 import AdminCMS from './AdminCMS';
-import { BlogPage, StoryPage, TeamPage } from './EditorialPages';
+import { BlogPage, DetailedStoryPage, TeamPage } from './EditorialPages';
 import { useSiteContent } from './contentStore';
 import {
   ArrowDown, ArrowRight, BookOpen, ChevronRight,
@@ -239,7 +239,7 @@ function App() {
   if (window.location.pathname.startsWith('/join')) return <JoinMovement />;
   if (window.location.pathname.startsWith('/team')) return <TeamPage />;
   if (window.location.pathname.startsWith('/blog')) return <BlogPage />;
-  if (window.location.pathname.startsWith('/our-story')) return <StoryPage />;
+  if (window.location.pathname.startsWith('/our-story')) return <DetailedStoryPage />;
   return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>Asia</span></div><IntroStory /><MissionSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /><MobileDock active="Home" /></>;
 }
 
