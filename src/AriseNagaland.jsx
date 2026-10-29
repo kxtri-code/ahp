@@ -36,7 +36,7 @@ const rise = {
 };
 
 function AriseLogo() {
-  return <a className="arise-logo" href="/arise-nagaland" aria-label="Arise Nagaland home"><span className="arise-logo__spark">✦</span><span>ARISE<small>NAGALAND</small></span></a>;
+  return <a className="arise-logo" href="/arise-nagaland" aria-label="Arise Nagaland home"><img src="/media/arise-nagaland-logo.png" alt="Arise Nagaland" /></a>;
 }
 
 function AriseIntro() {
