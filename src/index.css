@@ -39,6 +39,7 @@ img { display: block; max-width: 100%; }
 .desktop-nav a:hover::after { transform: scaleX(1); transform-origin: left; }
 .desktop-nav .event-link { color: #ffd1b2; }
 .nav-cta { justify-self: end; display: inline-flex; align-items: center; gap: 9px; padding: 13px 18px; border-radius: 8px; background: var(--orange); font-family: var(--display); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; }
+.nav-actions{justify-self:end;display:flex;align-items:center;gap:9px}.nav-actions .nav-cta{justify-self:auto}.nav-cta--join{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.32)}
 .menu-toggle { display: none; justify-self: end; background: none; border: 0; padding: 10px; cursor: pointer; }
 
 .mobile-menu { position: fixed; inset: 0; z-index: 200; background: var(--navy-deep); color: white; padding: 28px; }
@@ -48,6 +49,7 @@ img { display: block; max-width: 100%; }
 .mobile-menu nav > a { padding: 20px 0; border-bottom: 1px solid rgba(255,255,255,.13); display: grid; grid-template-columns: 44px 1fr auto; align-items: center; font-family: var(--display); font-size: clamp(24px, 8vw, 42px); font-weight: 600; }
 .mobile-menu nav a span { font: 500 10px var(--display); color: var(--orange); }
 .mobile-menu__cta { margin-top: 28px; background: var(--orange); padding: 19px 20px !important; border: 0 !important; grid-template-columns: 1fr auto !important; font-size: 14px !important; text-transform: uppercase; letter-spacing: .08em; }
+.mobile-menu__cta--join{margin-top:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25)!important}.mobile-menu__cta--join+.mobile-menu__cta{margin-top:10px}
 
 .hero { position: relative; height: max(720px, 100svh); min-height: 720px; background: var(--navy-deep); color: white; overflow: hidden; }
 .hero__media, .hero__fallback, .hero__wash, .hero__grain { position: absolute; inset: 0; }
@@ -221,7 +223,7 @@ img { display: block; max-width: 100%; }
   .section-pad { padding: 96px 0; }
   .page-shell { width: calc(100% - 40px); }
   .site-header { width: calc(100% - 28px); top: 12px; grid-template-columns: 1fr auto; height: 68px; }
-  .desktop-nav, .nav-cta { display: none; }
+  .desktop-nav, .nav-actions { display: none; }
   .menu-toggle { display: grid; color: white; }
   .hero { min-height: 740px; }
   .hero__media iframe { opacity: .7; }

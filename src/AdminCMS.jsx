@@ -50,6 +50,11 @@ function HomepageControls({ data, setData, updateItem }) {
   </>;
 }
 
+function AriseContentControls({ data, setData }) {
+  const update = (field, value) => setData({ ...data, arise: { ...data.arise, [field]: value } });
+  return <div className="cms-panel"><h3>Arise page sections</h3><p>These fields control the visible hero, Why Arise and registration copy.</p><div className="cms-field-grid"><Field label="Hero kicker"><input value={data.arise.heroKicker || ''} onChange={(e) => update('heroKicker', e.target.value)} /></Field><Field label="Hero heading"><input value={data.arise.heroHeading || ''} onChange={(e) => update('heroHeading', e.target.value)} /></Field><Field label="Hero duration"><input value={data.arise.heroDuration || ''} onChange={(e) => update('heroDuration', e.target.value)} /></Field><Field label="Why Arise eyebrow"><input value={data.arise.whyEyebrow || ''} onChange={(e) => update('whyEyebrow', e.target.value)} /></Field><Field label="Why Arise heading" wide><textarea rows="2" value={data.arise.whyHeading || ''} onChange={(e) => update('whyHeading', e.target.value)} /></Field><Field label="Why Arise lead" wide><textarea rows="3" value={data.arise.whyLead || ''} onChange={(e) => update('whyLead', e.target.value)} /></Field><Field label="Why Arise body" wide><textarea rows="4" value={data.arise.whyBody || ''} onChange={(e) => update('whyBody', e.target.value)} /></Field><Field label="Registration heading"><input value={data.arise.registrationHeading || ''} onChange={(e) => update('registrationHeading', e.target.value)} /></Field><Field label="Registration body" wide><textarea rows="3" value={data.arise.registrationBody || ''} onChange={(e) => update('registrationBody', e.target.value)} /></Field></div></div>;
+}
+
 function Login({ onLogin }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(false);

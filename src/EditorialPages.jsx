@@ -4,6 +4,9 @@ import { ArrowLeft, ArrowRight, ArrowUpRight, Calendar, Mail, MapPin, Menu, Quot
 import { useSiteContent } from './contentStore';
 import MobileDock from './MobileDock';
 import './editorial.css';
+import './header-consistency.css';
+
+const GIVE_URL = 'https://actswaco.churchcenter.com/giving/to/asia-highland-partners';
 
 function EditorialLogo() {
   return <a className="editorial-logo" href="/"><img src="/media/ahp-logo.png" alt="" /><span>Asia Highland<br />Partners</span></a>;
@@ -12,7 +15,7 @@ function EditorialLogo() {
 function EditorialHeader({ active }) {
   const [open, setOpen] = useState(false);
   const links = [['Our Story', '/our-story'], ['Team', '/team'], ['Blog', '/blog'], ['Arise Nagaland', '/arise-nagaland']];
-  return <><header className="editorial-header"><EditorialLogo /><nav>{links.map(([label, href]) => <a className={active === label ? 'is-active' : ''} href={href} key={href}>{label}</a>)}</nav><a className="editorial-header__cta" href="/join">Join the movement <ArrowUpRight /></a><button onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button></header><AnimatePresence>{open && <motion.div className="editorial-mobile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><div><EditorialLogo /><button onClick={() => setOpen(false)}><X /></button></div><nav>{links.map(([label, href]) => <a href={href} key={href}>{label}<ArrowRight /></a>)}<a href="/join">Join the movement <ArrowRight /></a></nav></motion.div>}</AnimatePresence></>;
+  return <><header className="editorial-header"><EditorialLogo /><nav>{links.map(([label, href]) => <a className={active === label ? 'is-active' : ''} href={href} key={href}>{label}</a>)}</nav><div className="editorial-header__actions"><a className="editorial-header__cta editorial-header__cta--join" href="/join">Join the movement <ArrowUpRight /></a><a className="editorial-header__cta" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <ArrowUpRight /></a></div><button onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button></header><AnimatePresence>{open && <motion.div className="editorial-mobile" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}><div><EditorialLogo /><button onClick={() => setOpen(false)}><X /></button></div><nav>{links.map(([label, href]) => <a href={href} key={href}>{label}<ArrowRight /></a>)}<a className="editorial-mobile__join" href="/join">Join the movement <ArrowRight /></a><a className="editorial-mobile__give" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <ArrowUpRight /></a></nav></motion.div>}</AnimatePresence></>;
 }
 
 function EditorialFooter() {

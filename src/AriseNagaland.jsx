@@ -8,6 +8,7 @@ import {
 import { useSiteContent } from './contentStore';
 import MobileDock from './MobileDock';
 import './arise.css';
+import './header-consistency.css';
 
 const navItems = [
   ['Why Arise', 'arise-why'],
@@ -36,7 +37,7 @@ const rise = {
 };
 
 function AriseLogo() {
-  return <a className="arise-logo" href="/arise-nagaland" aria-label="Arise Nagaland home"><img src="/media/arise-nagaland-logo.png" alt="Arise Nagaland" /></a>;
+  return <a className="arise-logo" href="/arise-nagaland" aria-label="Arise Nagaland home"><span className="arise-logo__official"><img src="/media/arise-nagaland-logo.jpg" alt="Arise Nagaland" /></span></a>;
 }
 
 function AriseIntro() {
@@ -117,19 +118,20 @@ function AriseHero({ onPlay }) {
     <div className="arise-hero__image" /><div className="arise-hero__overlay" /><div className="arise-noise" />
     <div className="arise-shell arise-hero__content">
       <motion.div className="arise-hero__minimal" initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .45, duration: .85 }}>
-        <div><p className="arise-kicker">Asia Highland Partners presents</p><h1><span>Arise</span><em>Nagaland</em></h1></div>
+        <div><p className="arise-kicker">{arise.heroKicker}</p><h1><span>{arise.heroHeading?.split(' ')[0] || 'Arise'}</span><em>{arise.heroHeading?.split(' ').slice(1).join(' ') || 'Nagaland'}</em></h1></div>
         <div className="arise-hero__actions"><a href="/arise-register">Register now <ArrowUpRight /></a><button onClick={toggleSound} aria-pressed={sound}><span>{sound ? <Volume2 /> : <VolumeX />}</span>{sound ? 'Sound on' : 'Tap for sound'}</button><button onClick={onPlay}><span><Play fill="currentColor" /></span>Full film</button></div>
       </motion.div>
     </div>
-    <div className="arise-hero__meta"><span><CalendarDays />{arise.date}</span><span><MapPin />{arise.venue}</span><span><Clock3 />A multi-day gathering</span></div>
+    <div className="arise-hero__meta"><span><CalendarDays />{arise.date}</span><span><MapPin />{arise.venue}</span><span><Clock3 />{arise.heroDuration}</span></div>
   </section>;
 }
 
 function WhyArise() {
+  const { arise } = useSiteContent();
   return <section id="arise-why" className="arise-why arise-section"><div className="arise-shell">
-    <motion.div className="arise-heading" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, amount: .25 }}><p className="arise-eyebrow">Why Arise</p><h2>Not another<br />conference.<br /><em>A response.</em></h2></motion.div>
+    <motion.div className="arise-heading" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true, amount: .25 }}><p className="arise-eyebrow">{arise.whyEyebrow}</p><h2>{arise.whyHeading}</h2></motion.div>
     <div className="arise-why__grid">
-      <motion.div className="arise-why__copy" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-lead">A generation is asking what faithful mission looks like now. Arise Nagaland creates space to worship, listen, learn and answer.</p><p>Rooted in Nagaland’s own story of receiving the Gospel and becoming a sending people, this gathering looks forward—to the communities, cultures and nations still waiting to hear.</p><a href="#arise-program">Explore the experience <ArrowRight /></a></motion.div>
+      <motion.div className="arise-why__copy" variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-lead">{arise.whyLead}</p><p>{arise.whyBody}</p><a href="#arise-program">Explore the experience <ArrowRight /></a></motion.div>
       <motion.div className="arise-why__visual" initial={{ clipPath: 'inset(0 0 100% 0)' }} whileInView={{ clipPath: 'inset(0)' }} viewport={{ once: true }} transition={{ duration: 1, ease: [0.22,1,.36,1] }}><img src="/media/mission-train-web.jpg" alt="A ministry leader equipping a gathered community" /><div><Flame /><strong>Rise.</strong><strong>Respond.</strong><strong>Go.</strong></div></motion.div>
     </div>
   </div></section>;
@@ -159,6 +161,7 @@ function Voices() {
 }
 
 function Registration() {
+  const { arise } = useSiteContent();
   const [sent, setSent] = useState(false);
   const submit = (event) => {
     event.preventDefault();
@@ -169,7 +172,7 @@ function Registration() {
     window.location.href = `mailto:asiahighlandpartners@gmail.com?subject=${subject}&body=${body}`;
   };
   return <section id="arise-register" className="arise-register arise-section"><div className="arise-shell arise-register__grid">
-    <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-eyebrow">Registration</p><h2>Take your<br />place.</h2><p>Complete the full delegate registration or join the update list while final event details are being confirmed.</p><a className="arise-register__primary" href="/arise-register">Open registration form <ArrowUpRight /></a><div className="arise-register__facts"><span><Check />Delegate registration</span><span><Check />Program announcements</span><span><Check />Volunteer opportunities</span></div></motion.div>
+    <motion.div variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}><p className="arise-eyebrow">Registration</p><h2>{arise.registrationHeading}</h2><p>{arise.registrationBody}</p><a className="arise-register__primary" href="/arise-register">Open registration form <ArrowUpRight /></a><div className="arise-register__facts"><span><Check />Delegate registration</span><span><Check />Program announcements</span><span><Check />Volunteer opportunities</span></div></motion.div>
     <motion.form onSubmit={submit} variants={rise} initial="hidden" whileInView="show" viewport={{ once: true }}>
       <label>Full name<input name="name" required autoComplete="name" /></label>
       <label>Email address<input name="email" type="email" required autoComplete="email" /></label>

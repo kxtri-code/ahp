@@ -7,18 +7,18 @@ import AdminCMS from './AdminCMS';
 import { BlogPage, DetailedStoryPage, TeamPage } from './EditorialPages';
 import { useSiteContent } from './contentStore';
 import {
-  ArrowDown, ArrowRight, BookOpen, ChevronRight,
+  ArrowDown, ArrowRight, ArrowUpRight, BookOpen, ChevronRight,
   Globe2, Handshake, Heart, Mail, MapPin, Menu, Quote,
   Send, Sprout, Users, Volume2, VolumeX, X,
 } from 'lucide-react';
 import MobileDock from './MobileDock';
+import './header-consistency.css';
 
 const CURRENT_YEAR = 2026;
 const GIVE_URL = 'https://actswaco.churchcenter.com/giving/to/asia-highland-partners';
 
 const navItems = [
   ['Our story', '/our-story'],
-  ['What we do', '/#work'],
   ['Our team', '/team'],
   ['Blog', '/blog'],
 ];
@@ -92,7 +92,7 @@ function Navigation() {
           {navItems.map(([label, href]) => <a key={href} href={href}>{label}</a>)}
           <a className="event-link" href="/arise-nagaland">Arise Nagaland</a>
         </nav>
-        <a className="nav-cta" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <Heart size={16} /></a>
+        <div className="nav-actions"><a className="nav-cta nav-cta--join" href="/join">Join the movement <ArrowUpRight size={16} /></a><a className="nav-cta" href={GIVE_URL} target="_blank" rel="noreferrer">Give now <Heart size={16} /></a></div>
         <button className="menu-toggle" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
       </header>
       <AnimatePresence>
@@ -106,6 +106,7 @@ function Navigation() {
                 </motion.a>
               ))}
               <a href="/arise-nagaland"><span>✦</span>Arise Nagaland<ChevronRight /></a>
+              <a className="mobile-menu__cta mobile-menu__cta--join" href="/join" onClick={() => setOpen(false)}>Join the movement <ArrowUpRight /></a>
               <a className="mobile-menu__cta" href={GIVE_URL} target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>Give now <Heart /></a>
             </nav>
           </motion.div>
