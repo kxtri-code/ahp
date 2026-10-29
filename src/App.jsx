@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useScroll, useSpring } from 'framer-motion';
 import AriseNagaland from './AriseNagaland';
-import AriseRegister from './AriseRegister';
+import AriseRegister, { AriseIdCard } from './AriseRegister';
 import JoinMovement from './JoinMovement';
 import AdminCMS from './AdminCMS';
 import { BlogPage, StoryPage, TeamPage } from './EditorialPages';
@@ -225,11 +225,16 @@ function Footer() {
   );
 }
 
+function IdCardPreview() {
+  return <div className="arise-signup" style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: '30px' }}><AriseIdCard registration={{ name: 'Demo Delegate', passType: 'Individual delegate', church: 'Asia Highland Partners', city: 'Kohima', attendeeId: 'ARISE-ID-2026-DEMO1' }} /></div>;
+}
+
 function App() {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
   if (window.location.pathname.startsWith('/cms')) return <AdminCMS />;
   if (window.location.pathname.startsWith('/arise-register')) return <AriseRegister />;
+  if (window.location.pathname.startsWith('/id-card-preview')) return <IdCardPreview />;
   if (window.location.pathname.startsWith('/arise-nagaland')) return <AriseNagaland />;
   if (window.location.pathname.startsWith('/join')) return <JoinMovement />;
   if (window.location.pathname.startsWith('/team')) return <TeamPage />;

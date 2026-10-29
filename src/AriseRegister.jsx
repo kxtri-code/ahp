@@ -4,7 +4,7 @@ import { addRecord, makeId, useSiteContent } from './contentStore';
 import MobileDock from './MobileDock';
 import './arise-register-page.css';
 
-function AriseIdCard({ registration }) {
+export function AriseIdCard({ registration }) {
   const qr = `https://quickchart.io/qr?text=${encodeURIComponent(registration.attendeeId)}&size=180`;
   return <div className="arise-id-card-wrap"><div className="arise-id-card" id="arise-id-card"><div className="arise-id-card__top"><img src="/media/arise-nagaland-logo.png" alt="Arise Nagaland" /><span>OFFICIAL DELEGATE</span></div><div className="arise-id-card__body"><div><p>Arise Nagaland 2026</p><h2>{registration.name}</h2><span>{registration.passType}</span><small>{registration.church} · {registration.city}</small><strong>{registration.attendeeId}</strong></div><img src={qr} alt="Registration QR code" /></div><div className="arise-id-card__foot">Verified delegate · Carry this card at the gathering</div></div><div className="arise-id-card__actions"><button onClick={() => window.print()}><Download /> Print / save ID card</button><a href="/arise-nagaland">Return to Arise Nagaland</a></div></div>;
 }
