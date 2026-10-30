@@ -29,6 +29,19 @@ export const defaultContent = {
     visionBody: 'To reach the unreached people groups of Asia and make the name of Jesus Christ known among every tribe, tongue and nation.',
     visionDetails: 'AHP is a non-denominational, evangelical mission-sending organization aligned with the Lausanne Covenant. We recruit, train and disciple Asian missionaries through locally driven, sustainable and indigenous mission movements.',
   },
+  ourStory: {
+    driveLead: 'Reaching the unreached through locally cultivated, sustainable missions.',
+    driveBody: 'There are 4.2 million full-time Christian workers, and 95% are working in places where the Gospel has already been shared, often in cities. However, less than 1% of all these missionaries are deployed to mountains and islands—geographies where the Gospel has never been heard and where there are no local Christians.',
+    driveClose: 'These communities can be difficult for foreign missionaries to reach because of geographic isolation and political or religious restrictions. Their languages and cultures also call for local understanding. AHP trains and sends missionaries who can meet people where they are, communicate the Gospel with cultural awareness and help local churches grow toward long-term self-sustainability.',
+    beliefs: [
+      { title: 'The Lausanne Covenant', copy: 'We uphold the Lausanne Covenant as a guiding expression of Christian mission.' },
+      { title: 'The Holy Nicene Creed', copy: 'We believe in the historic confession of the Christian church expressed in the Nicene Creed.' },
+      { title: 'The Triune God', copy: 'We believe in the Triune God (Matthew 28:19; Ephesians 4:4–6), and in the incarnation and resurrection of Jesus Christ.' },
+      { title: 'The Word of God', copy: 'We believe in the inspiration and authority of the Word of God (1 Thessalonians 2:13; 2 Timothy 3:15–17).' },
+      { title: 'Salvation by grace', copy: 'We believe in salvation by faith and grace alone (John 3:16; Ephesians 2:8–9).' },
+      { title: 'The Holy Spirit', copy: 'We believe the Holy Spirit continues to work, indwelling and enabling Christians to live a godly life (Acts 1:8; 4:31; Romans 8:9).' },
+    ],
+  },
   arise: {
     title: 'Arise Nagaland',
     heroKicker: 'Asia Highland Partners presents',
@@ -89,6 +102,7 @@ function mergeContent(saved) {
     ...saved,
     general: { ...defaultContent.general, ...(saved.general || {}) },
     homepage: { ...defaultContent.homepage, ...(saved.homepage || {}) },
+    ourStory: { ...defaultContent.ourStory, ...(saved.ourStory || {}), beliefs: Array.isArray(saved.ourStory?.beliefs) ? saved.ourStory.beliefs : defaultContent.ourStory.beliefs },
     arise: { ...defaultContent.arise, ...(saved.arise || {}) },
     missionSteps: Array.isArray(saved.missionSteps) ? saved.missionSteps : defaultContent.missionSteps,
     countries: Array.isArray(saved.countries) ? saved.countries : defaultContent.countries,
