@@ -3,11 +3,12 @@ import { AnimatePresence, motion } from 'framer-motion';
 import {
   ArrowRight, ArrowUpRight, Check, ChevronRight, Church,
   Globe2, HandHeart, Mail, MapPin, Menu, MessageCircle,
-  Send, Sparkles, Users, X,
+  Send, Sparkles, Users, X, Heart,
 } from 'lucide-react';
 import { addRecord, makeId } from './contentStore';
 import MobileDock from './MobileDock';
 import './join.css';
+import './header-consistency.css';
 
 const opportunities = [
   { icon: HandHeart, title: 'Prayer & care', copy: 'Stand with missionaries and communities through faithful prayer and practical encouragement.' },
@@ -18,21 +19,21 @@ const opportunities = [
 ];
 
 function JoinLogo() {
-  return <a className="join-logo" href="/" aria-label="Asia Highland Partners home"><img src="/media/ahp-logo.png" alt="" /><span>Asia Highland<br />Partners</span></a>;
+  return <a className="brand-mark" href="/" aria-label="Asia Highland Partners home"><span className="brand-mark__symbol"><img src="/media/ahp-logo.png" alt="" /></span><span className="brand-mark__type">Asia Highland<br />Partners</span></a>;
 }
 
 function JoinHeader() {
   const [open, setOpen] = useState(false);
   return <>
-    <header className="join-header">
+    <header className="site-header">
       <JoinLogo />
-      <nav aria-label="Volunteer page navigation"><a href="/#story">Our story</a><a href="/#work">What we do</a><a href="/arise-nagaland">Arise Nagaland</a></nav>
-      <a className="join-header__action" href="#volunteer-form">Apply to volunteer <ArrowUpRight /></a>
-      <button className="join-menu-button" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
+      <nav className="desktop-nav" aria-label="Primary navigation"><a href="/our-story">Our story</a><a href="/team">Our team</a><a href="/blog">Blog</a><a className="event-link" href="/arise-nagaland">Arise Nagaland</a></nav>
+      <div className="nav-actions"><a className="nav-cta nav-cta--join" href="#volunteer-form">Join the movement <ArrowUpRight /></a><a className="nav-cta" href="https://actswaco.churchcenter.com/giving/to/asia-highland-partners" target="_blank" rel="noreferrer">Give now <Heart /></a></div>
+      <button className="menu-toggle" onClick={() => setOpen(true)} aria-label="Open menu"><Menu /></button>
     </header>
-    <AnimatePresence>{open && <motion.div className="join-mobile-menu" initial={{ opacity: 0, x: '100%' }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: '100%' }}>
-      <div><JoinLogo /><button onClick={() => setOpen(false)} aria-label="Close menu"><X /></button></div>
-      <nav><a href="/" onClick={() => setOpen(false)}>AHP home <ChevronRight /></a><a href="/#work" onClick={() => setOpen(false)}>What we do <ChevronRight /></a><a href="/arise-nagaland" onClick={() => setOpen(false)}>Arise Nagaland <ChevronRight /></a><a href="#volunteer-form" onClick={() => setOpen(false)}>Apply to volunteer <ChevronRight /></a></nav>
+    <AnimatePresence>{open && <motion.div className="mobile-menu" initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+      <div className="mobile-menu__top"><JoinLogo /><button onClick={() => setOpen(false)} aria-label="Close menu"><X /></button></div>
+      <nav><a href="/our-story" onClick={() => setOpen(false)}><span>01</span>Our story <ChevronRight /></a><a href="/team" onClick={() => setOpen(false)}><span>02</span>Our team <ChevronRight /></a><a href="/blog" onClick={() => setOpen(false)}><span>03</span>Blog <ChevronRight /></a><a href="/arise-nagaland" onClick={() => setOpen(false)}><span>✦</span>Arise Nagaland <ChevronRight /></a><a className="mobile-menu__cta mobile-menu__cta--join" href="#volunteer-form" onClick={() => setOpen(false)}>Join the movement <ArrowUpRight /></a><a className="mobile-menu__cta" href="https://actswaco.churchcenter.com/giving/to/asia-highland-partners" target="_blank" rel="noreferrer" onClick={() => setOpen(false)}>Give now <Heart /></a></nav>
     </motion.div>}</AnimatePresence>
   </>;
 }

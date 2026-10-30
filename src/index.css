@@ -262,7 +262,7 @@ img { display: block; max-width: 100%; }
   .hero__media iframe { display: none; }
   .hero__fallback { animation: mobileHero 14s ease-in-out infinite alternate; }
   @keyframes mobileHero { to { transform: scale(1.08) translateX(-2%); } }
-  .hero__content { justify-content: flex-end; padding: 0 0 98px; }
+  .hero__content { justify-content: flex-end; padding: 0 0 152px; }
   .hero h1 { font-size: clamp(50px, 15vw, 70px); letter-spacing: -.07em; }
   .hero__intro { font-size: 17px; margin-top: 24px; }
   .hero__actions { width: 100%; display: grid; gap: 16px; margin-top: 28px; }
