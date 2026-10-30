@@ -21,6 +21,7 @@ export const defaultContent = {
     storyLead: 'Asia Highland Partners recruits, trains and disciples Asian missionaries to reach unreached people groups across Asia through locally driven, sustainable mission movements.',
     storyBody: 'Our story began with a calling spoken over a thirteen-year-old boy in Nagaland. Today, that calling has become an indigenous missions network—rooted in local churches, shaped by language and culture, and carried by people who already belong to the communities they serve.',
     storyImage: '/media/missionary-journey.jpg',
+    missionMapImage: '/media/ahp-global-missions-map.jpg',
     founderImage: '/media/founder-portrait-web.jpg',
     founderName: 'Husezo Rhakho',
     founderRole: 'Founder & President',

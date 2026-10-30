@@ -216,6 +216,15 @@ function PartnerSection() {
   );
 }
 
+function GlobalMissionMap() {
+  const { homepage } = useSiteContent();
+  return <section className="global-mission-map" aria-label="Asia Highland Partners global missions map">
+    <div className="global-mission-map__frame">
+      <img src={homepage.missionMapImage || '/media/ahp-global-missions-map.jpg'} alt="World map showing the global spread of unreached, minimally reached, superficially reached, partially reached and significantly reached people groups, with mission routes from Asia." loading="lazy" />
+    </div>
+  </section>;
+}
+
 function Footer() {
   return (
     <footer className="footer"><div className="page-shell">
@@ -241,7 +250,7 @@ function App() {
   if (window.location.pathname.startsWith('/team')) return <TeamPage />;
   if (window.location.pathname.startsWith('/blog')) return <BlogPage />;
   if (window.location.pathname.startsWith('/our-story')) return <DetailedStoryPage />;
-  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>Asia</span></div><IntroStory /><MissionSection /><ScriptureBand /><VisionSection /><PartnerSection /></main><Footer /><MobileDock active="Home" /></>;
+  return <><SiteIntro /><motion.div className="scroll-progress" style={{ scaleX: progress }} /><Navigation /><main><Hero /><div className="mission-strip"><span>Making the name of Jesus Christ known</span><Sprout /><span>Locally cultivated missions</span><Globe2 /><span>Asia</span></div><IntroStory /><MissionSection /><ScriptureBand /><VisionSection /><PartnerSection /><GlobalMissionMap /></main><Footer /><MobileDock active="Home" /></>;
 }
 
 export default App;
