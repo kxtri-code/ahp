@@ -6,9 +6,9 @@ const CHANGE_EVENT = 'ahp-content-change';
 
 export const defaultContent = {
   general: {
-    heroEyebrow: 'From the highlands · To the nations',
-    heroTitle: 'Reaching the unreached.',
-    heroIntro: 'Equipping indigenous missionaries across Asia to carry the hope of Jesus to communities where His name has never been heard.',
+    heroEyebrow: 'Locally led mission · Across Asia',
+    heroTitle: 'Hope for the unreached.',
+    heroIntro: 'Equipping local missionaries across Asia.',
     contactEmail: 'asiahighlandpartners@gmail.com',
     heroImage: '/media/reach-map.jpg',
     logoRevealVideo: '/media/ahp-logo-reveal-web.mp4',
